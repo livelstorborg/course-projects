@@ -3,11 +3,20 @@ from collections.abc import Callable
 
 
 def mesh_function(f: Callable[[float], float], t: np.ndarray) -> np.ndarray:
-    raise NotImplementedError
+
+    mesh_values = np.zeros(len(t))
+    for i in range(len(t)):
+        mesh_values[i] = f(t[i])
+
+    return mesh_values
 
 
 def func(t: float) -> float:
-    raise NotImplementedError
+    
+    if t <= 3:
+        return np.exp(-t)
+    if t <= 4:
+        return np.exp(-3*t)
 
 
 def test_mesh_function():
