@@ -250,7 +250,7 @@ class VibFD4(VibFD2):
     #     return u
 
 
-     def __call__(self) -> np.ndarray:
+    def __call__(self) -> np.ndarray:
         u = np.zeros(self.Nt + 1)
         return u
 
