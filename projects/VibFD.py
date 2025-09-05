@@ -151,20 +151,25 @@ class VibFD2(VibSolver):
         T = T * w / np.pi
         assert T.is_integer() and T % 2 == 0
 
-    def __call__(self) -> np.ndarray:
+    def __call__(self, f=None) -> np.ndarray:
 
         u = np.zeros(self.Nt + 1)
+
+        if f is None:
+            f_vals = np.zeros(self.Nt + 1)
+        else:
+            f_vals = f(self.t)
 
         # Boundary conditions
         u[0] = self.I
         u[self.Nt] = self.I
 
         # Using Taylor expansion around u_0 to get u[1]
-        u[1] = u[0] - 0.5 * self.dt**2 * self.w**2 * u[0]
+        u[1] = u[0] - 0.5 * self.dt**2 * self.w**2 * u[0] + (1/2) * self.dt**2 * f_vals[0]
 
         # Interior points
         for n in range(1, self.Nt):
-            u[n+1] = (2 - self.dt**2 * self.w**2) * u[n] - u[n-1]
+            u[n+1] = (2 - self.dt**2 * self.w**2) * u[n] - u[n-1] + self.dt**2 * f_vals[n]
 
         return u
 
@@ -186,19 +191,24 @@ class VibFD3(VibSolver):
         T = T * w / np.pi
         assert T.is_integer() and T % 2 == 0
 
-    def __call__(self) -> np.ndarray:
+    def __call__(self, f=None) -> np.ndarray:
 
         u = np.zeros(self.Nt + 1)
+
+        if f is None:
+            f_vals = np.zeros(self.Nt + 1)
+        else:
+            f_vals = f(self.t)
 
         # Boundary conditions
         u[0] = self.I
         
         # Using Taylor expansion around u_0 to get u[1]
-        u[1] = u[0] - 0.5 * self.dt**2 * self.w**2 * u[0]
+        u[1] = u[0] - 0.5 * self.dt**2 * self.w**2 * u[0] + (1/2) * self.dt**2 * f_vals[0]
 
         # Interior points
         for n in range(1, self.Nt):
-            u[n+1] = (2 - self.dt**2 * self.w**2) * u[n] - u[n-1]
+            u[n+1] = (2 - self.dt**2 * self.w**2) * u[n] - u[n-1] + self.dt**2 * f_vals[n]
 
         # Neumann boundary condition at T
         u[self.Nt] = u[self.Nt - 1]
